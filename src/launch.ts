@@ -14,10 +14,9 @@ app.use(cors<Request>());
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Request, res: Response) => {
@@ -78,8 +77,7 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
   }
 });
 
-const PORT = process.env.PORT || 80;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(80, () => {
+  console.log(`Server is running`);
 });
