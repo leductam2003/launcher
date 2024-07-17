@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Launch Token</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+
+            <h1 class="title">PUMPFUN LAUNCHER</h1>
+
+            <form id="launchTokenForm">
+                <div class="field is-horizontal">
+                    <div class="field-body">
+                        <div class="field">
+                            <label class="label" for="rpc">RPC URL:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="rpc" name="rpc"
+                                    value="https://api.mainnet-beta.solana.com">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="priorityFee">Priority Fee:</label>
+                            <div class="control">
+                                <input class="input" type="number" id="priorityFee" name="priorityFee" value="2000000">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field is-horizontal">
+                    <div class="field-body">
+                        <div class="field">
+                            <label class="label" for="wallet">Developer Wallet (Base58):</label>
+                            <div class="control">
+                                <input class="input" type="text" id="wallet" name="wallet"
+                                    value="">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="mint">Mint (Not required):</label>
+                            <div class="control">
+                                <input class="input" type="text" id="mint" name="mint" value="random">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h2 class="subtitle">Token Metadata</h2>
+
+                <div class="field is-horizontal">
+                    <div class="field-body">
+                        <div class="field">
+                            <label class="label" for="name">Token Name:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="name" name="name" value="">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="symbol">Token Symbol:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="symbol" name="symbol" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="description">Description:</label>
+                    <div class="control">
+                        <textarea class="textarea" id="description" name="description"></textarea>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label" for="filePath">Image:</label>
+                    <div class="control">
+                        <input class="input" type="file" id="filePath" name="filePath">
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-body">
+                        <div class="field">
+                            <label class="label" for="twitter">Twitter URL:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="twitter" name="twitter">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="telegram">Telegram URL:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="telegram" name="telegram">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="website">Website URL:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="website" name="website">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="field">
+                    <label class="label" for="website">Buy:</label>
+                    <div class="control">
+                        <input class="input" type="number" id="buy_amount" name="buy_amount" value="1">
+                    </div>
+                </div>
+
+                <div class="control">
+                    <button class="button is-primary" type="submit">Launch Token</button>
+                </div><br>
+                <div class="control">
+                    <div class="box">
+                        <h1 id="status" class="status">...</h1>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('launchTokenForm');
+            const status = document.getElementById('status');
+            status.textContent = 'Sending tx...'
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+                let fileInput = document.getElementById('filePath');
+                let file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('config[rpc]', document.getElementById('rpc').value);
+                formData.append('config[wallet]', document.getElementById('wallet').value);
+                formData.append('config[mint]', document.getElementById('mint').value);
+                formData.append('config[priorityFee]', parseInt(document.getElementById('priorityFee').value));
+                formData.append('config[buyAmount]', parseFloat(document.getElementById('buy_amount').value));
+                formData.append('createTokenMetadata[name]', document.getElementById('name').value);
+                formData.append('createTokenMetadata[symbol]', document.getElementById('symbol').value);
+                formData.append('createTokenMetadata[description]', document.getElementById('description').value);
+                formData.append('createTokenMetadata[file]', file, new Blob([file], { type: file.type }));
+                formData.append('createTokenMetadata[twitter]', document.getElementById('twitter').value);
+                formData.append('createTokenMetadata[telegram]', document.getElementById('telegram').value);
+                formData.append('createTokenMetadata[website]', document.getElementById('website').value);
+
+
+                fetch('http://localhost:3000/create', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); 
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                        status.textContent = 'Created!!!'
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        status.textContent = 'ERROR!!!'
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>
