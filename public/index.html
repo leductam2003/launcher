@@ -135,6 +135,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('launchTokenForm');
             const status = document.getElementById('status');
+            const host = `${window.location.host}`
             status.textContent = 'Sending tx...'
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
@@ -155,7 +156,7 @@
                 formData.append('createTokenMetadata[website]', document.getElementById('website').value);
 
 
-                fetch('https://launcher-bay.vercel.app/create', {
+                fetch('/create', {
                     method: 'POST',
                     body: formData
                 })
