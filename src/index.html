@@ -136,7 +136,6 @@
             const form = document.getElementById('launchTokenForm');
             const status = document.getElementById('status');
             const host = `${window.location.host}`
-            status.textContent = 'Sending tx...'
             form.addEventListener('submit', function (event) {
                 event.preventDefault();
                 let fileInput = document.getElementById('filePath');
