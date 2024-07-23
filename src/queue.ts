@@ -8,9 +8,9 @@ import { Blob } from 'buffer';
 
 const connection = {
   username: "default",
-  password: 'JxTy1LwRwfRQnIJ8CcSxsGQLejoenSJ7',
-    host: 'redis-16272.c239.us-east-1-2.ec2.redns.redis-cloud.com',
-    port: 16272
+  password: 'ckx8xMIlLAxF4VthHvEw58MmxnsBmsdV',
+    host: 'redis-13825.c1.us-east1-2.gce.redns.redis-cloud.com',
+    port: 13825
   
 };
 
