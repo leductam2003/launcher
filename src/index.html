@@ -189,7 +189,8 @@
                 if (response.ok) {
                     status.textContent = 'SELLING....';
                     const data = await response.json();
-                    status.textContent = `SOLD! | https://solscan.io/tx/${data.signature}`
+                    const url = `https://solscan.io/tx/${data.signature}`
+                    status.innerHTML = `CREATED! | <a href="${url}" target="_blank">${url}</a>`;
                 } else {
                     console.error('Error:', response.statusText);
                 }
@@ -268,7 +269,9 @@
 
                     const data = await response.json();
                     console.log('Success:', data);
-                    status.textContent = `CREATED | HASH: https://solscan.io/tx/${data.signature}`;
+                    const url = `https://solscan.io/tx/${data.signature}`
+                    status.innerHTML = `CREATED! | <a href="${url}" target="_blank">${url}</a>`;
+
                 } catch (error) {
                     console.error('Error:', error);
                     status.textContent = 'ERROR!!!';
