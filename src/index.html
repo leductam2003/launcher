@@ -21,7 +21,7 @@
                             <label class="label" for="rpc">RPC URL:</label>
                             <div class="control">
                                 <input class="input" type="text" id="rpc" name="rpc"
-                                    value="https://api.mainnet-beta.solana.com">
+                                    value="https://mainnet.helius-rpc.com/?api-key=0c36be1a-e380-4a79-95d1-684107bc016e">
                             </div>
                         </div>
                         <div class="field">
@@ -38,8 +38,7 @@
                         <div class="field">
                             <label class="label" for="wallet">Developer Wallet (Base58):</label>
                             <div class="control">
-                                <input class="input" type="text" id="wallet" name="wallet"
-                                    value="">
+                                <input class="input" type="text" id="wallet" name="wallet" value="">
                             </div>
                         </div>
 
@@ -47,6 +46,17 @@
                             <label class="label" for="mint">Mint (Not required):</label>
                             <div class="control">
                                 <input class="input" type="text" id="mint" name="mint" value="random">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
+                    <div class="field-body">
+                        <div class="field">
+                            <label class="label" for="mint">MINT ADDRESS</label>
+                            <div class="control">
+                                <input class="input" type="text" id="mintAddress" name="mintAddress"
+                                    placeholder="Mint address">
                             </div>
                         </div>
                     </div>
@@ -120,6 +130,8 @@
                 </div>
 
                 <div class="control">
+                    <button id="showMintAddress" class="button is-primary" type="submit">Show</button>
+                    <button id="generatePrivate" class="button is-primary" type="submit">Generate</button>
                     <button class="button is-primary" type="submit">Launch Token</button>
                 </div><br>
                 <div class="control">
@@ -127,17 +139,76 @@
                         <h1 id="status" class="status">...</h1>
                     </div>
                 </div>
-                
+
             </form>
         </div>
     </section>
     <script>
+        document.getElementById('showMintAddress').addEventListener('click', async function (event) {
+            event.preventDefault();
+
+            const mintValue = document.getElementById('mint').value;
+
+            try {
+                const response = await fetch('/get_mint_address', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ mint: mintValue }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('mintAddress').value = data.address;
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        document.getElementById('generatePrivate').addEventListener('click', async function (event) {
+            event.preventDefault();
+
+            const mintValue = document.getElementById('mint');
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'GET',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    mintValue.value = data.privateKey;
+                    const response2 = await fetch('/get_mint_address', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ mint: mintValue.value }),
+                    });
+                    if (response2.ok) {
+                        const data = await response2.json();
+                        document.getElementById('mintAddress').value = data.address;
+                    } else {
+                        console.error('Error:', response.statusText);
+                    }
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
         document.addEventListener('DOMContentLoaded', function () {
             const form = document.getElementById('launchTokenForm');
             const status = document.getElementById('status');
-            const host = `${window.location.host}`
-            form.addEventListener('submit', function (event) {
+            const host = `${window.location.host}`;
+
+            form.addEventListener('submit', async function (event) {
                 event.preventDefault();
+
                 let fileInput = document.getElementById('filePath');
                 let file = fileInput.files[0];
                 const formData = new FormData();
@@ -154,27 +225,27 @@
                 formData.append('createTokenMetadata[telegram]', document.getElementById('telegram').value);
                 formData.append('createTokenMetadata[website]', document.getElementById('website').value);
 
-
-                fetch('/create', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json(); 
-                    })
-                    .then(data => {
-                        console.log('Success:', data);
-                        status.textContent = 'Created!!!'
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        status.textContent = 'ERROR!!!'
+                try {
+                    status.textContent = `CREATING...`;
+                    const response = await fetch('/create', {
+                        method: 'POST',
+                        body: formData
                     });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    console.log('Success:', data);
+                    status.textContent = `CREATED | HASH: https://solscan.io/tx/${data.signature}`;
+                } catch (error) {
+                    console.error('Error:', error);
+                    status.textContent = 'ERROR!!!';
+                }
             });
         });
+
     </script>
 </body>
 
