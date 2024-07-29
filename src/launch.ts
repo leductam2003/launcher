@@ -59,8 +59,9 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
                 SLIPPAGE_BASIS_POINTS,
                 {
                     unitLimit: 250000,
-                    unitPrice: config.priorityFee,
+                    unitPrice: config.priorityFee * LAMPORTS_PER_SOL,
                 },
+                config.tip * LAMPORTS_PER_SOL
             );
             res.json(createResults);
         } else {
@@ -99,8 +100,9 @@ app.post('/sell', async (req: Request, res: Response) => {
                 SLIPPAGE_BASIS_POINTS,
                 {
                     unitLimit: 250000,
-                    unitPrice: config.priorityFee,
+                    unitPrice: config.priorityFee * LAMPORTS_PER_SOL,
                 },
+                config.tip * LAMPORTS_PER_SOL
             );
             console.log(sellResult)
             res.json(sellResult);

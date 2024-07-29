@@ -27,7 +27,13 @@
                         <div class="field">
                             <label class="label" for="priorityFee">Priority Fee:</label>
                             <div class="control">
-                                <input class="input" type="number" id="priorityFee" name="priorityFee" value="2000000">
+                                <input class="input" type="number" id="priorityFee" name="priorityFee" value="0.0005">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="tip">TIP: </label>
+                            <div class="control">
+                                <input class="input" type="number" id="tip" name="tip" value="0.004">
                             </div>
                         </div>
                     </div>
@@ -172,7 +178,8 @@
         
         document.getElementById('sellButton').addEventListener('click', async function (event) {
             event.preventDefault();
-            const priorityFee = parseInt(document.getElementById('priorityFee').value);
+            const priorityFee = parseFloat(document.getElementById('priorityFee').value);
+            const tip = parseFloat(document.getElementById('tip').value);
             const mintValue = document.getElementById('mintAddress').value;
             const devWallet = document.getElementById('wallet').value;
             const rpc = document.getElementById('rpc').value;
@@ -184,7 +191,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ mintAddress: mintValue, devWallet: devWallet, priorityFee: priorityFee, rpc: rpc}),
+                    body: JSON.stringify({ mintAddress: mintValue, devWallet: devWallet, priorityFee: priorityFee, tip: tip,rpc: rpc}),
                 });
 
                 if (response.ok) {
@@ -246,7 +253,8 @@
                 formData.append('config[rpc]', document.getElementById('rpc').value);
                 formData.append('config[wallet]', document.getElementById('wallet').value);
                 formData.append('config[mint]', document.getElementById('mint').value);
-                formData.append('config[priorityFee]', parseInt(document.getElementById('priorityFee').value));
+                formData.append('config[priorityFee]', parseFloat(document.getElementById('priorityFee').value));
+                formData.append('config[tip]', parseFloat(document.getElementById('tip').value));
                 formData.append('config[buyAmount]', parseFloat(document.getElementById('buy_amount').value));
                 formData.append('createTokenMetadata[name]', document.getElementById('name').value);
                 formData.append('createTokenMetadata[symbol]', document.getElementById('symbol').value);
