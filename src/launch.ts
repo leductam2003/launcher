@@ -8,7 +8,6 @@ import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import multer from 'multer';
 import path from 'path';
 import { getSPLBalance } from './utils';
-
 const app = express();
 app.use(bodyParser.json());
 app.use(cors<Request>());
@@ -92,10 +91,11 @@ app.post('/sell', async (req: Request, res: Response) => {
         );
         console.log("currentSPLBalance", currentSPLBalance);
         if (currentSPLBalance) {
+            const sellBalance = BigInt((Math.round(currentSPLBalance) - 1) * Math.pow(10, DEFAULT_DECIMALS));
             let sellResult = await pumpFunSDK.sell(
                 creator,
                 new PublicKey(config.mintAddress),
-                BigInt(Math.floor(currentSPLBalance) * Math.pow(10, DEFAULT_DECIMALS)),
+                sellBalance,
                 SLIPPAGE_BASIS_POINTS,
                 {
                     unitLimit: 250000,
