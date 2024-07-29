@@ -130,16 +130,16 @@
                 </div>
 
                 <div class="control">
-                    <button id="showMintAddress" class="button is-primary" type="submit">Show</button>
-                    <button id="generatePrivate" class="button is-primary" type="submit">Generate</button>
                     <button class="button is-primary" type="submit">Launch Token</button>
+                    <button id="sellButton" class="button is-primary" type="submit">Sell</button>
+                    <button id="generatePrivate" class="button is-primary" type="submit">Generate</button>
+                    <button id="showMintAddress" class="button is-primary" type="submit">Show Address</button>
                 </div><br>
                 <div class="control">
                     <div class="box">
                         <h1 id="status" class="status">...</h1>
                     </div>
                 </div>
-
             </form>
         </div>
     </section>
@@ -161,6 +161,7 @@
                 if (response.ok) {
                     const data = await response.json();
                     document.getElementById('mintAddress').value = data.address;
+                    document.getElementById('status').textContent = data.address
                 } else {
                     console.error('Error:', response.statusText);
                 }
@@ -168,6 +169,35 @@
                 console.error('Error:', error);
             }
         });
+        
+        document.getElementById('sellButton').addEventListener('click', async function (event) {
+            event.preventDefault();
+            const priorityFee = parseInt(document.getElementById('priorityFee').value);
+            const mintValue = document.getElementById('mintAddress').value;
+            const devWallet = document.getElementById('wallet').value;
+            const rpc = document.getElementById('rpc').value;
+            const status = document.getElementById('status');
+            try {
+                const response = await fetch('/sell', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ mintAddress: mintValue, devWallet: devWallet, priorityFee: priorityFee, rpc: rpc}),
+                });
+
+                if (response.ok) {
+                    status.textContent = 'SELLING....';
+                    const data = await response.json();
+                    status.textContent = `SOLD! | https://solscan.io/tx/${data.signature}`
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
         document.getElementById('generatePrivate').addEventListener('click', async function (event) {
             event.preventDefault();
 
@@ -189,7 +219,7 @@
                         body: JSON.stringify({ mint: mintValue.value }),
                     });
                     if (response2.ok) {
-                        const data = await response2.json();
+                        const data = await response2.json()
                         document.getElementById('mintAddress').value = data.address;
                     } else {
                         console.error('Error:', response.statusText);

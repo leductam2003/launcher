@@ -5,9 +5,10 @@ import bs58 from 'bs58';
 import { Keypair, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
 import { PumpFunSDK, DEFAULT_DECIMALS } from 'pumpdotfun-sdk';
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
-import fs from "fs";
 import multer from 'multer';
 import path from 'path';
+import { getSPLBalance } from './utils';
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors<Request>());
@@ -75,12 +76,50 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
         }
     }
 });
+app.post('/sell', async (req: Request, res: Response) => {
+    try {
+        const config = req.body;
+        const creator = Keypair.fromSecretKey(bs58.decode(config.devWallet));
+        const SLIPPAGE_BASIS_POINTS = BigInt(100);
+        const connection = new Connection(config.rpc);
+        const wallet = new Wallet(creator);
+        const provider = new AnchorProvider(connection, wallet, { commitment: "finalized" });
+        const pumpFunSDK = new PumpFunSDK(provider);
+        let currentSPLBalance = await getSPLBalance(
+            connection,
+            new PublicKey(config.mintAddress),
+            creator.publicKey
+        );
+        console.log("currentSPLBalance", currentSPLBalance);
+        if (currentSPLBalance) {
+            let sellResult = await pumpFunSDK.sell(
+                creator,
+                new PublicKey(config.mintAddress),
+                BigInt(currentSPLBalance * Math.pow(10, DEFAULT_DECIMALS)),
+                SLIPPAGE_BASIS_POINTS,
+                {
+                    unitLimit: 250000,
+                    unitPrice: config.priorityFee,
+                },
+            );
+            console.log(sellResult)
+            res.json(sellResult);
+        }
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message)
+            res.status(500).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Unknown error occurred" });
+        }
+    }
+});
 
 app.get('/generate', async (req: Request, res: Response) => {
     try {
         let mint: Keypair | Uint8Array;
         mint = Keypair.generate();
-        res.json({"privateKey": `[${mint.secretKey.toString()}]` });
+        res.json({ "privateKey": `[${mint.secretKey.toString()}]` });
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message)
