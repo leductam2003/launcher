@@ -95,7 +95,7 @@ app.post('/sell', async (req: Request, res: Response) => {
             let sellResult = await pumpFunSDK.sell(
                 creator,
                 new PublicKey(config.mintAddress),
-                BigInt(currentSPLBalance * Math.pow(10, DEFAULT_DECIMALS)),
+                BigInt(Math.floor(currentSPLBalance * Math.pow(10, DEFAULT_DECIMALS))),
                 SLIPPAGE_BASIS_POINTS,
                 {
                     unitLimit: 250000,

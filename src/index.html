@@ -178,6 +178,7 @@
             const rpc = document.getElementById('rpc').value;
             const status = document.getElementById('status');
             try {
+                status.textContent = 'SELLING....';
                 const response = await fetch('/sell', {
                     method: 'POST',
                     headers: {
@@ -187,10 +188,9 @@
                 });
 
                 if (response.ok) {
-                    status.textContent = 'SELLING....';
                     const data = await response.json();
                     const url = `https://solscan.io/tx/${data.signature}`
-                    status.innerHTML = `CREATED! | <a href="${url}" target="_blank">${url}</a>`;
+                    status.innerHTML = `SOLD! | <a href="${url}" target="_blank">${url}</a>`;
                 } else {
                     console.error('Error:', response.statusText);
                 }
