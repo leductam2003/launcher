@@ -25,7 +25,7 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
         let createTokenMetadata = req.body.createTokenMetadata;
         const config = req.body.config;
         const creator = Keypair.fromSecretKey(bs58.decode(config.wallet));
-        const SLIPPAGE_BASIS_POINTS = BigInt(100);
+        const SLIPPAGE_BASIS_POINTS = BigInt(500);
         const connection = new Connection(config.rpc);
         const wallet = new Wallet(creator);
         const provider = new AnchorProvider(connection, wallet, { commitment: "finalized" });
