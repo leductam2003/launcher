@@ -2,12 +2,19 @@ import express, { Request, Response } from 'express';
 import cors from "cors";
 import bodyParser from 'body-parser';
 import bs58 from 'bs58';
-import { Keypair, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+import { Keypair, Connection, LAMPORTS_PER_SOL, PublicKey, ComputeBudgetProgram } from '@solana/web3.js';
 import { PumpFunSDK, DEFAULT_DECIMALS } from 'pumpdotfun-sdk';
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import multer from 'multer';
 import path from 'path';
 import { getSPLBalance } from './utils';
+import {
+    ConnectionManager,
+    TransactionBuilder,
+    TransactionWrapper,
+    Logger,
+    sendTxUsingJito
+} from "@solworks/soltoolkit-sdk";
 const app = express();
 app.use(bodyParser.json());
 app.use(cors<Request>());
@@ -121,7 +128,7 @@ app.get('/generate', async (req: Request, res: Response) => {
     try {
         let mint: Keypair | Uint8Array;
         mint = Keypair.generate();
-        res.json({ "privateKey": `[${mint.secretKey.toString()}]` });
+        res.json({ "privateKey": `[${mint.secretKey.toString()}]`, "privateKeyString": bs58.encode(mint.secretKey), "address": mint.publicKey.toString() });
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message)
@@ -131,6 +138,7 @@ app.get('/generate', async (req: Request, res: Response) => {
         }
     }
 });
+
 
 app.post('/get_mint_address', async (req: Request, res: Response) => {
     try {
@@ -144,6 +152,112 @@ app.post('/get_mint_address', async (req: Request, res: Response) => {
             mint = Keypair.fromSecretKey(new Uint8Array(config.mint.slice(1, -1).split(',').map(Number)));
         }
         res.json({ "address": mint.publicKey.toString() });
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message)
+            res.status(500).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Unknown error occurred" });
+        }
+    }
+});
+
+app.post('/transfer', async (req: Request, res: Response) => {
+    try {
+        const config = req.body;
+        const sender = Keypair.fromSecretKey(bs58.decode(config.wallet));
+        const cm = await ConnectionManager.getInstance({
+            commitment: 'processed',
+            endpoints: [
+                config.rpc,
+            ],
+            mode: "fastest",
+            network: "mainnet-beta",
+        });
+        let fee_instr = [
+            ComputeBudgetProgram.setComputeUnitLimit({ units: 100000 }),
+            ComputeBudgetProgram.setComputeUnitPrice({ microLamports: config.fee * LAMPORTS_PER_SOL })
+        ]
+        var builder = TransactionBuilder
+            .create()
+            .addIx(
+                fee_instr
+            )
+            .addSolTransferIx({
+                from: sender.publicKey,
+                to: new PublicKey(config.toAddress),
+                amountLamports: config.amount * LAMPORTS_PER_SOL,
+            });
+        let tx = builder.build();
+        const wrapper = await TransactionWrapper.create({
+            connectionManager: cm,
+            transaction: tx,
+            signer: sender.publicKey,
+        }).addBlockhashAndFeePayer(sender.publicKey);
+        const signedTx = await wrapper.sign({
+            signers: [sender],
+        });
+        const transferSig = await sendTxUsingJito({
+            serializedTx: signedTx[0].serialize(),
+            region: 'ny',
+        });
+        res.status(200).json({ "signature": transferSig });
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message)
+            res.status(500).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Unknown error occurred" });
+        }
+    }
+});
+app.post('/collect', async (req: Request, res: Response) => {
+    try {
+        const config = req.body;
+        const fromWallet = Keypair.fromSecretKey(bs58.decode(config.fromWallet));
+        const toWallet = Keypair.fromSecretKey(bs58.decode(config.toWallet));
+        const cm = await ConnectionManager.getInstance({
+            commitment: 'processed',
+            endpoints: [
+                config.rpc,
+            ],
+            mode: "fastest",
+            network: "mainnet-beta",
+        });
+        let conn = cm.connSync({ changeConn: true });
+        let fee = config.fee * LAMPORTS_PER_SOL;
+        const balance = await conn.getBalance(fromWallet.publicKey, "confirmed");
+        let amountSend = balance - fee - (0.001 * LAMPORTS_PER_SOL)
+        let fee_instr = [
+            ComputeBudgetProgram.setComputeUnitLimit({ units: 100000 }),
+            ComputeBudgetProgram.setComputeUnitPrice({ microLamports: config.fee * LAMPORTS_PER_SOL })
+        ]
+        var builder = TransactionBuilder
+            .create()
+            .addIx(
+                fee_instr
+            )
+            .addSolTransferIx({
+                from: fromWallet.publicKey,
+                to: toWallet.publicKey,
+                amountLamports: amountSend,
+            })
+        let tx = builder.build();
+        const wrapper = await TransactionWrapper.create({
+            connectionManager: cm,
+            transaction: tx,
+            signer: fromWallet.publicKey,
+        }).addBlockhashAndFeePayer(fromWallet.publicKey);
+
+
+        const signedTx = await wrapper.sign({
+            signers: [fromWallet],
+        });
+        const transferSig = await sendTxUsingJito({
+            serializedTx: signedTx[0].serialize(),
+            region: 'ny',
+        });
+        res.status(200).json({ "signature": transferSig });
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message)

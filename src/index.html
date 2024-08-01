@@ -11,148 +11,286 @@
 <body>
     <section class="section">
         <div class="container">
-
             <h1 class="title">PUMPFUN LAUNCHER</h1>
+            <div class="columns">
+                <div class="column box">
+                    <form id="launchTokenForm">
+                        <div class="field is-horizontal">
+                            <div class="field-body">
+                                <div class="field">
+                                    <label class="label" for="rpc">RPC URL:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="rpc" name="rpc"
+                                            value="https://mainnet.helius-rpc.com/?api-key=0c36be1a-e380-4a79-95d1-684107bc016e">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="priorityFee">Priority Fee:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="priorityFee" name="priorityFee"
+                                            value="0.0005">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="tip">TIP: </label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="tip" name="tip" value="0.004">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <form id="launchTokenForm">
-                <div class="field is-horizontal">
+                        <div class="field is-horizontal">
+                            <div class="field-body">
+                                <div class="field">
+                                    <label class="label" for="wallet">Developer Wallet (Base58):</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="wallet" name="wallet" value="">
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label" for="mint">Mint (Not required):</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="mint" name="mint" value="random">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field is-horizontal">
+                            <div class="field-body">
+                                <div class="field">
+                                    <label class="label" for="mint">MINT ADDRESS</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="mintAddress" name="mintAddress"
+                                            placeholder="Mint address">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="subtitle">Token Metadata</h2>
+
+                        <div class="field is-horizontal">
+                            <div class="field-body">
+                                <div class="field">
+                                    <label class="label" for="name">Token Name:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="name" name="name" value="">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label class="label" for="symbol">Token Symbol:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="symbol" name="symbol" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="description">Description:</label>
+                            <div class="control">
+                                <textarea class="textarea" id="description" name="description"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="filePath">Image:</label>
+                            <div class="control">
+                                <input class="input" type="file" id="filePath" name="filePath">
+                            </div>
+                        </div>
+                        <div class="field is-horizontal">
+                            <div class="field-body">
+                                <div class="field">
+                                    <label class="label" for="twitter">Twitter URL:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="twitter" name="twitter">
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label" for="telegram">Telegram URL:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="telegram" name="telegram">
+                                    </div>
+                                </div>
+
+                                <div class="field">
+                                    <label class="label" for="website">Website URL:</label>
+                                    <div class="control">
+                                        <input class="input" type="text" id="website" name="website">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label" for="website">Buy:</label>
+                            <div class="control">
+                                <input class="input" type="text" id="buy_amount" name="buy_amount" value="1.3">
+                            </div>
+                        </div>
+
+                        <div class="control">
+                            <button class="button is-primary" type="submit">Launch Token</button>
+                            <button id="sellButton" class="button is-primary" type="submit">Sell</button>
+                            <button id="showMintAddress" class="button is-primary" type="submit">Show</button>
+                            <button id="generatePrivate" class="button is-primary" type="button">Generate</button>
+                            <button id="clearButton" class="button is-primary" type="submit">Clear</button>
+                        </div><br>
+                        <div class="control">
+                            <div class="box">
+                                <h1 id="status" class="status">...</h1>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="column box">
                     <div class="field-body">
                         <div class="field">
-                            <label class="label" for="rpc">RPC URL:</label>
+                            <label class="label" for="privateKey">Main Wallet Private:</label>
                             <div class="control">
-                                <input class="input" type="text" id="rpc" name="rpc"
-                                    value="https://mainnet.helius-rpc.com/?api-key=0c36be1a-e380-4a79-95d1-684107bc016e">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label" for="priorityFee">Priority Fee:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="priorityFee" name="priorityFee" value="0.0005">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label" for="tip">TIP: </label>
-                            <div class="control">
-                                <input class="input" type="text" id="tip" name="tip" value="0.004">
+                                <input class="input" type="text" id="mainWalletPrivate" name="privateKey">
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="field is-horizontal">
-                    <div class="field-body">
-                        <div class="field">
-                            <label class="label" for="wallet">Developer Wallet (Base58):</label>
-                            <div class="control">
-                                <input class="input" type="text" id="wallet" name="wallet" value="">
+                    <div class="field is-horizontal">
+                        <div class="field-body">
+                            <div class="field">
+                                <label class="label" for="privateKey">New Wallet:</label>
+                                <div class="control">
+                                    <input class="input" type="text" id="newWalletInput" name="privateKey">
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="mint">Mint (Not required):</label>
-                            <div class="control">
-                                <input class="input" type="text" id="mint" name="mint" value="random">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="field is-horizontal">
-                    <div class="field-body">
-                        <div class="field">
-                            <label class="label" for="mint">MINT ADDRESS</label>
-                            <div class="control">
-                                <input class="input" type="text" id="mintAddress" name="mintAddress"
-                                    placeholder="Mint address">
+                            <div class="field">
+                                <label class="label" for="address">New Address:</label>
+                                <div class="control">
+                                    <input class="input" type="text" name="newAddressInput" id="newAddressInput">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-
-                <h2 class="subtitle">Token Metadata</h2>
-
-                <div class="field is-horizontal">
-                    <div class="field-body">
-                        <div class="field">
-                            <label class="label" for="name">Token Name:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="name" name="name" value="">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label class="label" for="symbol">Token Symbol:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="symbol" name="symbol" value="">
-                            </div>
+                    <div class="field">
+                        <div class="control">
+                            <label class="label" for="amountToTransfer">Amount:</label>
+                            <input class="input" type="text" id="amountToTransfer" name="amountToTransfer">
                         </div>
                     </div>
-                </div>
-
-                <div class="field">
-                    <label class="label" for="description">Description:</label>
+                    <div class="field">
+                        <div class="control">
+                            <label class="label" for="fee2">Fee:</label>
+                            <input class="input" type="text" id="fee2" name="fee2" value="0.0001">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="control">
+                            <button id="generateNewWalletButton" class="button is-primary" type="button">Generate</button>
+                            <button id="transferButton" class="button is-primary" type="button">Transfer</button>
+                            <button id="collectButton" class="button is-primary" type="button">Collect</button>
+                        </div>
+                    </div>
                     <div class="control">
-                        <textarea class="textarea" id="description" name="description"></textarea>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <label class="label" for="filePath">Image:</label>
-                    <div class="control">
-                        <input class="input" type="file" id="filePath" name="filePath">
-                    </div>
-                </div>
-                <div class="field is-horizontal">
-                    <div class="field-body">
-                        <div class="field">
-                            <label class="label" for="twitter">Twitter URL:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="twitter" name="twitter">
-                            </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="telegram">Telegram URL:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="telegram" name="telegram">
-                            </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="website">Website URL:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="website" name="website">
-                            </div>
+                        <div class="box">
+                            <h1 id="status2" class="status">...</h1>
                         </div>
                     </div>
+
                 </div>
-
-
-
-                <div class="field">
-                    <label class="label" for="website">Buy:</label>
-                    <div class="control">
-                        <input class="input" type="text" id="buy_amount" name="buy_amount" value="1.1">
-                    </div>
-                </div>
-
-                <div class="control">
-                    <button class="button is-primary" type="submit">Launch Token</button>
-                    <button id="sellButton" class="button is-primary" type="submit">Sell</button>
-                    <button id="generatePrivate" class="button is-primary" type="submit">Generate</button>
-                    <button id="showMintAddress" class="button is-primary" type="submit">Show Address</button>
-                </div><br>
-                <div class="control">
-                    <div class="box">
-                        <h1 id="status" class="status">...</h1>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
     </section>
+
     <script>
+        document.getElementById('generateNewWalletButton').addEventListener('click', async function (event) {
+            event.preventDefault();
+            const devWallet = document.getElementById('wallet');
+            const newWalletInput = document.getElementById('newWalletInput');
+            const newAddressInput = document.getElementById('newAddressInput');
+            try {
+                const response = await fetch('/generate', {
+                    method: 'GET',
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    newWalletInput.value = data.privateKeyString;
+                    devWallet.value = data.privateKeyString;
+                    newAddressInput.value = data.address;
+                } else {
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+
+        })
+        document.getElementById('transferButton').addEventListener('click', async function (event) {
+            event.preventDefault();
+            const newWalletInput = document.getElementById('newWalletInput');
+            const mainWalletPrivate = document.getElementById('mainWalletPrivate');
+            const newAddressInput = document.getElementById('newAddressInput');
+            const amountToTransfer = document.getElementById('amountToTransfer');
+            const fee = document.getElementById('fee2');
+            const rpc = document.getElementById('rpc');
+            const status = document.getElementById('status2');
+            status.textContent = 'SENDING...';
+            const response = await fetch('/transfer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rpc: rpc.value, wallet: mainWalletPrivate.value, toAddress: newAddressInput.value, amount: parseFloat(amountToTransfer.value), fee: fee.value }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const url = `https://solscan.io/tx/${data.signature}`
+                status.innerHTML = `SENT! | <a href="${url}" target="_blank">${url}</a>`;
+            } else {
+                console.error('Error:', response.statusText);
+            }
+        })
+        document.getElementById('collectButton').addEventListener('click', async function (event) {
+            event.preventDefault();
+            const newWalletInput = document.getElementById('newWalletInput');
+            const mainWalletPrivate = document.getElementById('mainWalletPrivate');
+            const newAddressInput = document.getElementById('newAddressInput');
+            const amountToTransfer = document.getElementById('amountToTransfer');
+            const status = document.getElementById('status2');
+            const fee = document.getElementById('fee2');
+            const rpcc = document.getElementById('rpc');
+            status.textContent = 'SENDING...';
+            const response = await fetch('/collect', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rpc: rpcc.value, fromWallet: newWalletInput.value, toWallet: mainWalletPrivate.value, fee: fee.value}),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const url = `https://solscan.io/tx/${data.signature}`
+                status.innerHTML = `SENT! | <a href="${url}" target="_blank">${url}</a>`;
+            } else {
+                console.error('Error:', response.statusText);
+            }
+        })
+        document.getElementById('clearButton').addEventListener('click', async function (event) {
+            event.preventDefault();
+            document.getElementById('mint').value = null;
+            document.getElementById('mintAddress').value = null;
+            document.getElementById('name').value = null;
+            document.getElementById('symbol').value = null;
+            document.getElementById('description').value = null;
+            document.getElementById('twitter').value = null;
+            document.getElementById('telegram').value = null;
+            document.getElementById('website').value = null;
+            document.getElementById('filePath').value = null;
+        })
         document.getElementById('showMintAddress').addEventListener('click', async function (event) {
             event.preventDefault();
-
             const mintValue = document.getElementById('mint').value;
 
             try {
@@ -175,7 +313,7 @@
                 console.error('Error:', error);
             }
         });
-        
+
         document.getElementById('sellButton').addEventListener('click', async function (event) {
             event.preventDefault();
             const priorityFee = parseFloat(document.getElementById('priorityFee').value);
@@ -191,7 +329,7 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ mintAddress: mintValue, devWallet: devWallet, priorityFee: priorityFee, tip: tip,rpc: rpc}),
+                    body: JSON.stringify({ mintAddress: mintValue, devWallet: devWallet, priorityFee: priorityFee, tip: tip, rpc: rpc }),
                 });
 
                 if (response.ok) {
@@ -208,30 +346,15 @@
 
         document.getElementById('generatePrivate').addEventListener('click', async function (event) {
             event.preventDefault();
-
             const mintValue = document.getElementById('mint');
-
             try {
                 const response = await fetch('/generate', {
                     method: 'GET',
                 });
-
                 if (response.ok) {
                     const data = await response.json();
-                    mintValue.value = data.privateKey;
-                    const response2 = await fetch('/get_mint_address', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ mint: mintValue.value }),
-                    });
-                    if (response2.ok) {
-                        const data = await response2.json()
-                        document.getElementById('mintAddress').value = data.address;
-                    } else {
-                        console.error('Error:', response.statusText);
-                    }
+                    mintValue.value = data.privateKeyString;
+                    document.getElementById('mintAddress').value = data.address;
                 } else {
                     console.error('Error:', response.statusText);
                 }
