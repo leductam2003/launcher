@@ -40,7 +40,7 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
         let mint: Keypair | Uint8Array;
         if (config.mint === "random") {
             mint = Keypair.generate();
-        } else if (config.mint.length === 87) {
+        } else if (config.mint.length === 88) {
             mint = Keypair.fromSecretKey(bs58.decode(config.mint));
         } else {
             mint = Keypair.fromSecretKey(new Uint8Array(config.mint.slice(1, -1).split(',').map(Number)));
