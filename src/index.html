@@ -455,8 +455,8 @@
                         });
                         const data = await response.json();
                         if (!response.ok) {
-                            status.innerHTML = `${data.message}`;
-                            throw new Error(data.message);
+                            status.innerHTML = `${data.error}`;
+                            throw new Error(data.error);
                         }
                         console.log('Success:', data);
                         let result = bundleCheckbox ? `BUNDLE ID: ${data.result}` : `<a href="https://solscan.io/tx/${data.result}" target="_blank">Solscan</a>`
