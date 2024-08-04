@@ -7,7 +7,7 @@ import { PumpFunSDK, DEFAULT_DECIMALS } from 'pumpdotfun-sdk';
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import multer from 'multer';
 import path from 'path';
-import { getSPLBalance } from './utils';
+import { getSPLBalance, privateToKeypair } from './utils';
 import {
     ConnectionManager,
     TransactionBuilder,
@@ -31,20 +31,13 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
     try {
         let createTokenMetadata = req.body.createTokenMetadata;
         const config = req.body.config;
-        const creator = Keypair.fromSecretKey(bs58.decode(config.wallet));
         const SLIPPAGE_BASIS_POINTS = BigInt(500);
         const connection = new Connection(config.rpc);
+        const creator: Keypair = privateToKeypair(config.wallet);
         const wallet = new Wallet(creator);
         const provider = new AnchorProvider(connection, wallet, { commitment: "finalized" });
         const pumpFunSDK = new PumpFunSDK(provider);
-        let mint: Keypair | Uint8Array;
-        if (config.mint === "random") {
-            mint = Keypair.generate();
-        } else if (config.mint.length === 88) {
-            mint = Keypair.fromSecretKey(bs58.decode(config.mint));
-        } else {
-            mint = Keypair.fromSecretKey(new Uint8Array(config.mint.slice(1, -1).split(',').map(Number)));
-        }
+        let mint: Keypair = privateToKeypair(config.mint);
         if (!req.file) {
             res.status(400).json({ error: 'No file uploaded' });
             return;
@@ -70,10 +63,95 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
                 },
                 config.tip * LAMPORTS_PER_SOL
             );
-            res.json(createResults);
+            res.json({result: createResults});
         } else {
             res.json({ message: "Token already exists", publicKey: mint.publicKey.toString() });
         }
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message)
+            res.status(500).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Unknown error occurred" });
+        }
+    }
+});
+app.post('/createAndSnipe', upload.single('createTokenMetadata[file]'), async (req: Request, res: Response) => {
+    try {
+        let createTokenMetadata = req.body.createTokenMetadata;
+        const config = req.body.config;
+        const SLIPPAGE_BASIS_POINTS = BigInt(500);
+        const connection = new Connection(config.rpc);
+        const creator: Keypair = privateToKeypair(config.wallet);
+        const wallet = new Wallet(creator);
+        const provider = new AnchorProvider(connection, wallet, { commitment: "finalized" });
+        const pumpFunSDK = new PumpFunSDK(provider);
+        let mint: Keypair = privateToKeypair(config.mint);
+        if (!req.file) {
+            res.status(400).json({ error: 'No file uploaded' });
+            return;
+        }
+        createTokenMetadata.file = new Blob([req.file.buffer], { type: req.file.mimetype });
+        let currentSolBalance = await connection.getBalance(creator.publicKey);
+        if (currentSolBalance === 0) {
+            return res.status(400).json({ error: "Balance zero SOL", publicKey: creator.publicKey.toBase58() });
+        }
+
+        console.log(`TOKEN: ${mint.publicKey.toString()}`);
+        let boundingCurveAccount = await pumpFunSDK.getBondingCurveAccount(mint.publicKey);
+        const amounts = config.snipeAmounts.split(',').map((a: string) => BigInt(parseFloat(a) * LAMPORTS_PER_SOL));
+        const keyPairMap = config.snipePrivateKeys.split(',').map((p: string) => privateToKeypair(p))
+        if (!boundingCurveAccount) {
+            let createResults = await pumpFunSDK.createAndBuyAndSnipe(
+                creator,
+                mint,
+                createTokenMetadata,
+                BigInt(config.buyAmount * LAMPORTS_PER_SOL),
+                keyPairMap,
+                amounts,
+                SLIPPAGE_BASIS_POINTS,
+                {
+                    unitLimit: 250000,
+                    unitPrice: config.priorityFee * LAMPORTS_PER_SOL,
+                },
+                config.tip * LAMPORTS_PER_SOL
+            );
+            res.json({result: createResults});
+        } else {
+            res.json({ message: "Token already exists", publicKey: mint.publicKey.toString() });
+        }
+    } catch (error) {
+        if (error instanceof Error) {
+            console.error(error.message)
+            res.status(500).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: "Unknown error occurred" });
+        }
+    }
+});
+app.post('/snipe', async (req: Request, res: Response) => {
+    try {
+        const config = req.body;
+        const creator = Keypair.fromSecretKey(bs58.decode(config.devWallet));
+        const SLIPPAGE_BASIS_POINTS = BigInt(500);
+        const connection = new Connection(config.rpc);
+        const wallet = new Wallet(creator);
+        const provider = new AnchorProvider(connection, wallet, { commitment: "finalized" });
+        const pumpFunSDK = new PumpFunSDK(provider);
+        const amounts = config.snipeAmounts.split(',').map((a: string) => BigInt(parseFloat(a) * LAMPORTS_PER_SOL));
+        const keyPairMap = config.snipePrivateKeys.split(',').map((p: string) => privateToKeypair(p))
+        const snipe = await pumpFunSDK.bundleBuy(
+            keyPairMap,
+            new PublicKey(config.mintAddress),
+            amounts,
+            SLIPPAGE_BASIS_POINTS,
+            {
+                unitLimit: 250000,
+                unitPrice: config.priorityFee * LAMPORTS_PER_SOL,
+            },
+            config.tip * LAMPORTS_PER_SOL
+        )
+        res.json({bundleID: snipe});
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message)

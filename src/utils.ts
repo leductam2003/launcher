@@ -5,10 +5,29 @@ import {
   PublicKey,
   Connection,
   LAMPORTS_PER_SOL,
+  SystemProgram,
+
 } from "@solana/web3.js";
 import { sha256 } from "js-sha256";
 
 import fs from "fs";
+
+
+export function privateToKeypair(privateKey: string): Keypair {
+  let mint;
+  switch (true) {
+    case privateKey === "random":
+      mint = Keypair.generate();
+      break;
+    case privateKey.length === 88:
+      mint = Keypair.fromSecretKey(bs58.decode(privateKey));
+      break;
+    default:
+      mint = Keypair.fromSecretKey(new Uint8Array(privateKey.slice(1, -1).split(',').map(Number)));
+      break;
+  }
+  return mint;
+}
 
 export function getOrCreateKeypair(dir: string, keyName: string): Keypair {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
@@ -56,7 +75,7 @@ export const getSPLBalance = async (
     let ata = getAssociatedTokenAddressSync(mintAddress, pubKey, allowOffCurve);
     const balance = await connection.getTokenAccountBalance(ata, "processed");
     return balance.value.uiAmount;
-  } catch (e) {}
+  } catch (e) { }
   return null;
 };
 
