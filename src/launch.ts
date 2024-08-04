@@ -63,9 +63,9 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
                 },
                 config.tip * LAMPORTS_PER_SOL
             );
-            res.json({result: createResults});
+            res.json({result: createResults.signature});
         } else {
-            res.json({ message: "Token already exists", publicKey: mint.publicKey.toString() });
+            res.status(500).json({ error: "Token already exists" });
         }
     } catch (error) {
         if (error instanceof Error) {
@@ -118,7 +118,7 @@ app.post('/createAndSnipe', upload.single('createTokenMetadata[file]'), async (r
             );
             res.json({result: createResults});
         } else {
-            res.json({ message: "Token already exists", publicKey: mint.publicKey.toString() });
+            res.status(500).json({ error: "Token already exists" });
         }
     } catch (error) {
         if (error instanceof Error) {

@@ -453,19 +453,17 @@
                             method: 'POST',
                             body: formData
                         });
-
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-
                         const data = await response.json();
+                        if (!response.ok) {
+                            status.innerHTML = `${data.message}`;
+                            throw new Error(data.message);
+                        }
                         console.log('Success:', data);
                         let result = bundleCheckbox ? `BUNDLE ID: ${data.result}` : `<a href="https://solscan.io/tx/${data.result}" target="_blank">Solscan</a>`
                         status.innerHTML = `CREATED! | ${result}`;
 
                     } catch (error) {
                         console.error('Error:', error);
-                        status.textContent = 'ERROR!!!';
                     }
                 }
             });
