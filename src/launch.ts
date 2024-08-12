@@ -165,7 +165,6 @@ app.post('/sell', async (req: Request, res: Response) => {
     try {
         const config = req.body;
         const creator = Keypair.fromSecretKey(bs58.decode(config.devWallet));
-        const SLIPPAGE_BASIS_POINTS = BigInt(100);
         const connection = new Connection(config.rpc);
         const wallet = new Wallet(creator);
         const provider = new AnchorProvider(connection, wallet, { commitment: "finalized" });
@@ -177,14 +176,13 @@ app.post('/sell', async (req: Request, res: Response) => {
         );
         console.log("currentSPLBalance", currentSPLBalance);
         if (currentSPLBalance) {
-            const sellBalance = BigInt((Math.round(currentSPLBalance) - 1) * Math.pow(10, DEFAULT_DECIMALS));
+            const sellBalance = BigInt(currentSPLBalance * Math.pow(10, DEFAULT_DECIMALS));
             let sellResult = await pumpFunSDK.sell(
                 creator,
                 new PublicKey(config.mintAddress),
                 sellBalance,
-                SLIPPAGE_BASIS_POINTS,
                 {
-                    unitLimit: 250000,
+                    unitLimit: 100000,
                     unitPrice: config.priorityFee * LAMPORTS_PER_SOL,
                 },
                 config.tip * LAMPORTS_PER_SOL
