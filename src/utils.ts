@@ -19,7 +19,7 @@ export function privateToKeypair(privateKey: string): Keypair {
     case privateKey === "random":
       mint = Keypair.generate();
       break;
-    case privateKey.length === 88:
+    case matchPrivateKey(privateKey):
       mint = Keypair.fromSecretKey(bs58.decode(privateKey));
       break;
     default:
@@ -27,6 +27,10 @@ export function privateToKeypair(privateKey: string): Keypair {
       break;
   }
   return mint;
+}
+function matchPrivateKey(key: string) {
+  const regex = /^.{87,88}$/;
+  return regex.test(key);
 }
 
 export function getOrCreateKeypair(dir: string, keyName: string): Keypair {

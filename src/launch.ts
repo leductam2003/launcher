@@ -176,7 +176,7 @@ app.post('/sell', async (req: Request, res: Response) => {
         );
         console.log("currentSPLBalance", currentSPLBalance);
         if (currentSPLBalance) {
-            const sellBalance = BigInt(currentSPLBalance * Math.pow(10, DEFAULT_DECIMALS));
+            const sellBalance = BigInt((Math.round(currentSPLBalance) - 1) * Math.pow(10, DEFAULT_DECIMALS));
             let sellResult = await pumpFunSDK.sell(
                 creator,
                 new PublicKey(config.mintAddress),
