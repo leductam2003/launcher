@@ -431,10 +431,23 @@
             const host = `${window.location.host}`;
             form.addEventListener('submit', async function (event) {
                 event.preventDefault();
+                let hasError = false;
                 const symbol = document.getElementById('symbol');
+                const name = document.getElementById('name');
+                const description = document.getElementById('description');
+                if (name.value.length > 32) {
+                    status.innerHTML = "Name too long: it must be less than 32 characters";
+                    hasError = true;
+                }
+                if (description.value.length > 2000) {
+                    status.innerHTML = "Description too long: it must be less than 2000 characters";
+                    hasError = true;
+                }
                 if (symbol.value.length > 10) {
-                    status.value = 'ticker must be less than 11 characters'
-                } else {
+                    status.innerHTML = 'Ticker must be less than 11 characters';
+                    hasError = true;
+                }
+                if (!hasError) {
                     const bundleCheckbox = document.getElementById('bundleCheckbox').checked;
                     let fileInput = document.getElementById('filePath');
                     const previewImage = document.getElementById('previewImage').src;
