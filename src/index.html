@@ -485,8 +485,8 @@
                             method: 'POST',
                             body: formData
                         });
+                        const data = await response.json();
                         if (!response.ok) {
-                            const data = await response.json();
                             status.innerHTML = `${data.error}`;
                             throw new Error(data.error);
                         }
