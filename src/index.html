@@ -392,14 +392,13 @@
                     },
                     body: JSON.stringify({ mintAddress: mintValue, devWallet: devWallet, priorityFee: priorityFee, tip: tip, rpc: rpc }),
                 });
-
+                const data = await response.json();
                 if (response.ok) {
-                    const data = await response.json();
                     const url = `https://solscan.io/tx/${data.signature}`
                     status.innerHTML = `SOLD! | <a href="${url}" target="_blank">Solscan</a>`;
                 } else {
                     console.error('Error:', response.statusText);
-                    status.innerHTML = response.error;
+                    status.innerHTML = data.error;
                 }
             } catch (error) {
                 console.error('Error:', error);
