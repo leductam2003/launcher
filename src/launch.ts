@@ -16,6 +16,8 @@ import {
     sendTxUsingJito,
 
 } from "@solworks/soltoolkit-sdk";
+import http from 'http';
+
 const app = express();
 app.use(bodyParser.json());
 app.use(cors<Request>());
@@ -347,6 +349,12 @@ app.post('/collect', async (req: Request, res: Response) => {
             res.status(500).json({ error: "Unknown error occurred" });
         }
     }
+});
+app.get('/tip_floor', (req, res) => {
+    fetch('http://bundles-api-rest.jito.wtf/api/v1/bundles/tip_floor')
+        .then(response => response.json())
+        .then(data => res.json(data))
+        .catch(error => res.status(500).send(error.toString()));
 });
 
 const PORT = process.env.PORT || 80;

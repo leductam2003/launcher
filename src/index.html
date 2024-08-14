@@ -444,7 +444,7 @@
                     if (file) {
                         blob_data = new Blob([file])
                         type = file.type
-                    }else if (!file && previewImage !== ""){
+                    } else if (!file && previewImage !== "") {
                         blob_data = await fetchBlobFromBase64(previewImage);
                         type = blob_data.type
                     }
@@ -500,23 +500,18 @@
             }
         });
         document.addEventListener('DOMContentLoaded', function () {
-            const socket = new WebSocket('ws://bundles-api-rest.jito.wtf/api/v1/bundles/tip_stream');
-            socket.onmessage = function (event) {
-                const data = JSON.parse(event.data);
-                const mediumTip = data[0].landed_tips_95th_percentile;
-                const highTip = data[0].landed_tips_99th_percentile;
-                document.getElementById('mediumTip').textContent = mediumTip.toFixed(3);
-                document.getElementById('highTip').textContent = highTip.toFixed(3);
-            };
-            socket.onopen = function () {
-                console.log('WebSocket connection established.');
-            };
-            socket.onclose = function (event) {
-                console.log('WebSocket connection closed:', event.reason);
-            };
-            socket.onerror = function (error) {
-                console.error('WebSocket error:', error);
-            };
+            setInterval(() => {
+                fetch('/tip_floor')
+                    .then(response => response.json())
+                    .then(data => {
+                        const mediumTip = data[0].landed_tips_95th_percentile;
+                        const highTip = data[0].landed_tips_99th_percentile;
+                        document.getElementById('mediumTip').textContent = mediumTip.toFixed(3);
+                        document.getElementById('highTip').textContent = highTip.toFixed(3);
+                    })
+                    .catch(error => console.error('Fetch error:', error))
+            }, 5000);
+
             const tabs = document.querySelectorAll(".tabs ul li");
             const tabContents = document.querySelectorAll(".tab-content");
 
