@@ -7,13 +7,14 @@ import { PumpFunSDK, DEFAULT_DECIMALS } from 'pumpdotfun-sdk';
 import { AnchorProvider, Wallet } from "@coral-xyz/anchor";
 import multer from 'multer';
 import path from 'path';
-import { getSPLBalance, privateToKeypair } from './utils';
+import { getSPLBalance, privateToKeypair, matchPrivateKey } from './utils';
 import {
     ConnectionManager,
     TransactionBuilder,
     TransactionWrapper,
     Logger,
-    sendTxUsingJito
+    sendTxUsingJito,
+
 } from "@solworks/soltoolkit-sdk";
 const app = express();
 app.use(bodyParser.json());
@@ -49,6 +50,7 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
         }
 
         console.log(`TOKEN: ${mint.publicKey.toString()}`);
+
         let boundingCurveAccount = await pumpFunSDK.getBondingCurveAccount(mint.publicKey);
         if (!boundingCurveAccount) {
             let createResults = await pumpFunSDK.createAndBuy(
@@ -63,10 +65,11 @@ app.post('/create', upload.single('createTokenMetadata[file]'), async (req: Requ
                 },
                 config.tip * LAMPORTS_PER_SOL
             );
-            res.json({result: createResults.signature});
+            res.json({ result: createResults.signature, mint: mint.publicKey.toString() });
         } else {
             res.status(500).json({ error: "Token already exists" });
         }
+
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message)
@@ -116,7 +119,7 @@ app.post('/createAndSnipe', upload.single('createTokenMetadata[file]'), async (r
                 },
                 config.tip * LAMPORTS_PER_SOL
             );
-            res.json({result: createResults});
+            res.json({ result: createResults, mint: mint.publicKey.toString() });
         } else {
             res.status(500).json({ error: "Token already exists" });
         }
@@ -151,7 +154,7 @@ app.post('/snipe', async (req: Request, res: Response) => {
             },
             config.tip * LAMPORTS_PER_SOL
         )
-        res.json({bundleID: snipe});
+        res.json({ bundleID: snipe });
     } catch (error) {
         if (error instanceof Error) {
             console.error(error.message)
@@ -220,17 +223,19 @@ app.post('/get_mint_address', async (req: Request, res: Response) => {
     try {
         const config = req.body;
         let mint: Keypair | Uint8Array;
-        if (config.mint === "random") {
-            mint = Keypair.generate();
-        } else if (config.mint.length === 87) {
+        if (!config.mint || config.mint === "") {
+            return res.json({ "address": "please enter private key" });
+        }
+        if (matchPrivateKey(config.mint)) {
             mint = Keypair.fromSecretKey(bs58.decode(config.mint));
         } else {
             mint = Keypair.fromSecretKey(new Uint8Array(config.mint.slice(1, -1).split(',').map(Number)));
         }
+
         res.json({ "address": mint.publicKey.toString() });
     } catch (error) {
         if (error instanceof Error) {
-            console.error(error.message)
+            console.error(error.message);
             res.status(500).json({ error: error.message });
         } else {
             res.status(500).json({ error: "Unknown error occurred" });

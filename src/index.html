@@ -12,226 +12,235 @@
 <body>
     <section class="section">
         <div class="container">
-            <h1 class="title">PUMPFUN LAUNCHER</h1>
-            <div class="columns">
-                <div class="column box">
-                    <form id="launchTokenForm">
-                        <div class="field is-horizontal">
-                            <div class="field-body">
-                                <div class="field">
-                                    <label class="label" for="wallet">Snipe Wallets:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="snipePrivateKeys" name="snipePrivateKeys"
-                                            value="">
-                                    </div>
+            <div class="tabs is-centered">
+                <ul>
+                    <li id="settings"><a>Settings</a></li>
+                    <li id="transfer"><a>Transfer</a></li>
+                    <li id="launcher" class="is-active"><a>Launcher</a></li>
+                </ul>
+            </div>
+            <div id="launcherContent" class="tab-content">
+                <div class="columns">
+                    <div class="column box">
+                        <form id="launchTokenForm">
+                            <div class="field is-horizontal">
+                                <div class="field-body">
+                                    <p class="p">Medium:</p><label id="mediumTip" class="label"
+                                        style="margin-left: 10px;">0</label>
+                                    <p class="p" style="margin-left: 10px;">High:</p><label id="highTip" class="label"
+                                        style="margin-left: 10px;">0</label>
                                 </div>
-                                <div class="field">
-                                    <label class="label" for="wallet">Snipe Amounts:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="snipeAmounts" name="snipeAmounts"
-                                            value="1">
+                            </div>
+
+                            <div class="field is-horizontal">
+                                <div class="field-body">
+                                    <div class="field">
+                                        <label class="label" for="priorityFee">Priority Fee:</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="priorityFee" name="priorityFee"
+                                                value="0.0015">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="tip">TIP: </label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="tip" name="tip" value="0.004">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="field">
-                            <label class="label" for="wallet">Developer Wallet:</label>
+
+                            <div class="field is-horizontal">
+                                <div class="field-body">
+                                    <div class="field">
+                                        <label class="label" for="mint">Mint (not required):</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="mint" name="mint" value=""
+                                                placeholder="private key for contract address">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="mint">MINT ADDRESS</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="mintAddress" name="mintAddress"
+                                                placeholder="contract address">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field is-horizontal">
+                                <div class="field-body">
+                                    <div class="field">
+                                        <label class="label" for="name">Name:</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="name" name="name" value=""
+                                                placeholder="name">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label class="label" for="symbol">Ticker:</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="symbol" name="symbol" value=""
+                                                placeholder="ticker">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label" for="description">Description:</label>
+                                <div class="control">
+                                    <textarea class="textarea" id="description" name="description"
+                                        placeholder="description"></textarea>
+                                </div>
+                            </div><br>
+                            <div class="field-body">
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                        <img id="previewImage" src="" alt="Image Preview"
+                                            style="display:none; width: 50px; height: 50px; margin-right: 10px;">
+                                    </div>
+                                    <div class="control">
+                                        <label class="label" for="filePath">Image:</label>
+                                        <input class="input" type="file" id="filePath" name="filePath">
+                                    </div>
+                                </div>
+                            </div><br>
+
+                            <div class="field is-horizontal">
+                                <div class="field-body">
+                                    <div class="field">
+                                        <label class="label" for="twitter">Twitter URL:</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="twitter" name="twitter">
+                                        </div>
+                                    </div>
+
+                                    <div class="field">
+                                        <label class="label" for="telegram">Telegram URL:</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="telegram" name="telegram">
+                                        </div>
+                                    </div>
+
+                                    <div class="field">
+                                        <label class="label" for="website">Website URL:</label>
+                                        <div class="control">
+                                            <input class="input" type="text" id="website" name="website">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="field">
+                                <label class="label" for="website">Buy:</label>
+                                <div class="control">
+                                    <input class="input" type="text" id="buy_amount" name="buy_amount" value="1.5">
+                                </div>
+                            </div>
+                            <div class="checkbox">
+                                <label class="checkbox">
+                                    <input id="bundleCheckbox" type="checkbox" /> Bundle
+                                </label>
+                            </div></br></br>
                             <div class="control">
-                                <input class="input" type="text" id="wallet" name="wallet" value="">
-                            </div>
-                        </div>
-
-                        <div class="field is-horizontal">
-                            <div class="field-body">
-                                <p class="p">Medium:</p><label id="mediumTip" class="label"
-                                    style="margin-left: 10px;">0</label>
-                                <p class="p" style="margin-left: 10px;">High:</p><label id="highTip" class="label"
-                                    style="margin-left: 10px;">0</label>
-                            </div>
-                        </div>
-
-                        <div class="field is-horizontal">
-                            <div class="field-body">
-                                <div class="field">
-                                    <label class="label" for="rpc">RPC URL:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="rpc" name="rpc"
-                                            value="https://mainnet.helius-rpc.com/?api-key=0c36be1a-e380-4a79-95d1-684107bc016e">
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="priorityFee">Priority Fee:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="priorityFee" name="priorityFee"
-                                            value="0.0015">
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="tip">TIP: </label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="tip" name="tip" value="0.004">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="field is-horizontal">
-                            <div class="field-body">
-                                <div class="field">
-                                    <label class="label" for="mint">Mint (Not required):</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="mint" name="mint" value="random">
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="mint">MINT ADDRESS</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="mintAddress" name="mintAddress"
-                                            placeholder="Mint address">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h2 class="subtitle">Token Metadata</h2>
-
-                        <div class="field is-horizontal">
-                            <div class="field-body">
-                                <div class="field">
-                                    <label class="label" for="name">Token Name:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="name" name="name" value="">
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label class="label" for="symbol">Ticker:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="symbol" name="symbol" value="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="description">Description:</label>
+                                <button class="button is-primary" type="submit">Launch</button>
+                                <button id="sellButton" class="button is-primary" type="submit">Sell</button>
+                                <button id="showMintAddress" class="button is-primary" type="submit">Show</button>
+                                <button id="generatePrivate" class="button is-primary" type="button">Generate</button>
+                                <button id="clearButton" class="button is-primary" type="submit">Clear</button>
+                            </div><br>
                             <div class="control">
-                                <textarea class="textarea" id="description" name="description"></textarea>
+                                <button id="fastGasButton" class="button is-danger" type="submit">Fast Gas</button>
+                                <button id="fastFillButton" class="button is-danger" type="submit">Fast Fill</button>
+                                <button id="normalGasButton" class="button is-primary" type="submit">Reset Gas</button>
                             </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="filePath">Image:</label>
                             <div class="control">
-                                <input class="input" type="file" id="filePath" name="filePath">
-                            </div>
-                        </div>
-                        <div class="field is-horizontal">
-                            <div class="field-body">
-                                <div class="field">
-                                    <label class="label" for="twitter">Twitter URL:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="twitter" name="twitter">
-                                    </div>
-                                </div>
-
-                                <div class="field">
-                                    <label class="label" for="telegram">Telegram URL:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="telegram" name="telegram">
-                                    </div>
-                                </div>
-
-                                <div class="field">
-                                    <label class="label" for="website">Website URL:</label>
-                                    <div class="control">
-                                        <input class="input" type="text" id="website" name="website">
-                                    </div>
+                                <div class="box">
+                                    <h1 id="status" class="status">...</h1>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="field">
-                            <label class="label" for="website">Buy:</label>
-                            <div class="control">
-                                <input class="input" type="text" id="buy_amount" name="buy_amount" value="1.3">
-                            </div>
-                        </div>
-                        <div class="checkbox">
-                            <label class="checkbox">
-                                <input id="bundleCheckbox" type="checkbox" /> Bundle
-                            </label>
-                        </div></br></br>
-                        <div class="control">
-                            <button class="button is-primary" type="submit">Launch</button>
-                            <button id="sellButton" class="button is-primary" type="submit">Sell</button>
-                            <button id="showMintAddress" class="button is-primary" type="submit">Show</button>
-                            <button id="generatePrivate" class="button is-primary" type="button">Generate</button>
-                            <button id="clearButton" class="button is-primary" type="submit">Clear</button>
-                        </div><br>
-                        <div class="control">
-                            <button id="fastGasButton" class="button is-danger" type="submit">Fast Gas</button>
-                            <button id="fastFillButton" class="button is-danger" type="submit">Fast Fill</button>
-                            <button id="normalGasButton" class="button is-primary" type="submit">Reset Gas</button>
-                        </div>
-                        <div class="control">
-                            <div class="box">
-                                <h1 id="status" class="status">...</h1>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
-                <div class="column box">
+            </div>
+            <div id="transferContent" class="tab-content is-hidden box">
+                <div class="field-body">
+                    <div class="field">
+                        <label class="label" for="privateKey">Main Wallet Private:</label>
+                        <div class="control">
+                            <input class="input" type="text" id="mainWalletPrivate" name="privateKey">
+                        </div>
+                    </div>
+                </div>
+                <div class="field is-horizontal">
                     <div class="field-body">
                         <div class="field">
-                            <label class="label" for="privateKey">Main Wallet Private:</label>
+                            <label class="label" for="privateKey">New Wallet:</label>
                             <div class="control">
-                                <input class="input" type="text" id="mainWalletPrivate" name="privateKey">
+                                <input class="input" type="text" id="newWalletInput" name="privateKey">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="address">New Address:</label>
+                            <div class="control">
+                                <input class="input" type="text" name="newAddressInput" id="newAddressInput">
                             </div>
                         </div>
                     </div>
-                    <div class="field is-horizontal">
-                        <div class="field-body">
-                            <div class="field">
-                                <label class="label" for="privateKey">New Wallet:</label>
-                                <div class="control">
-                                    <input class="input" type="text" id="newWalletInput" name="privateKey">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label class="label" for="address">New Address:</label>
-                                <div class="control">
-                                    <input class="input" type="text" name="newAddressInput" id="newAddressInput">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <label class="label" for="amountToTransfer">Amount:</label>
-                            <input class="input" type="text" id="amountToTransfer" name="amountToTransfer">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <label class="label" for="fee2">Fee:</label>
-                            <input class="input" type="text" id="fee2" name="fee2" value="0.0001">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="control">
-                            <button id="generateNewWalletButton" class="button is-primary"
-                                type="button">Generate</button>
-                            <button id="transferButton" class="button is-primary" type="button">Transfer</button>
-                            <button id="collectButton" class="button is-primary" type="button">Collect</button>
-                        </div>
-                    </div>
-                    <div class="control">
-                        <div class="box">
-                            <h1 id="status2" class="status">...</h1>
-                        </div>
-                    </div>
-
                 </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="label" for="amountToTransfer">Amount:</label>
+                        <input class="input" type="text" id="amountToTransfer" name="amountToTransfer">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <label class="label" for="fee2">Fee:</label>
+                        <input class="input" type="text" id="fee2" name="fee2" value="0.0001">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="control">
+                        <button id="generateNewWalletButton" class="button is-primary" type="button">Generate</button>
+                        <button id="transferButton" class="button is-primary" type="button">Transfer</button>
+                        <button id="collectButton" class="button is-primary" type="button">Collect</button>
+                    </div>
+                </div>
+                <div class="control">
+                    <div class="box">
+                        <h1 id="status2" class="status">...</h1>
+                    </div>
+                </div>
+            </div>
+            <div id="settingsContent" class="tab-content is-hidden box">
+                <div class="field">
+                    <label class="label" for="wallet">Developer Wallet:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="wallet" name="wallet" value="">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="rpc">RPC URL:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="rpc" name="rpc"
+                            value="https://mainnet.helius-rpc.com/?api-key=0c36be1a-e380-4a79-95d1-684107bc016e">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="wallet">Snipe Wallets:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="snipePrivateKeys" name="snipePrivateKeys" value="">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label" for="wallet">Snipe Amounts:</label>
+                    <div class="control">
+                        <input class="input" type="text" id="snipeAmounts" name="snipeAmounts" value="1">
+                    </div>
+                </div>
+                <button id="saveSettings" class="button is-primary" type="submit">Save</button>
             </div>
         </div>
     </section>
@@ -391,6 +400,7 @@
                     status.innerHTML = `SOLD! | <a href="${url}" target="_blank">Solscan</a>`;
                 } else {
                     console.error('Error:', response.statusText);
+                    status.innerHTML = response.error;
                 }
             } catch (error) {
                 console.error('Error:', error);
@@ -429,7 +439,16 @@
                 } else {
                     const bundleCheckbox = document.getElementById('bundleCheckbox').checked;
                     let fileInput = document.getElementById('filePath');
+                    const previewImage = document.getElementById('previewImage').src;
                     let file = fileInput.files[0];
+                    let blob_data, type;
+                    if (file) {
+                        blob_data = new Blob([file])
+                        type = file.type
+                    }else if (!file && previewImage !== ""){
+                        blob_data = await fetchBlobFromBase64(previewImage);
+                        type = blob_data.type
+                    }
                     const formData = new FormData();
                     formData.append('config[rpc]', document.getElementById('rpc').value);
                     formData.append('config[wallet]', document.getElementById('wallet').value);
@@ -442,7 +461,8 @@
                     formData.append('createTokenMetadata[name]', document.getElementById('name').value);
                     formData.append('createTokenMetadata[symbol]', document.getElementById('symbol').value);
                     formData.append('createTokenMetadata[description]', document.getElementById('description').value);
-                    formData.append('createTokenMetadata[file]', file, new Blob([file], { type: file.type }));
+                    //formData.append('createTokenMetadata[file]', file, new Blob([file], { type: file.type }));
+                    formData.append('createTokenMetadata[file]', new Blob([blob_data], { type: type }));
                     formData.append('createTokenMetadata[twitter]', document.getElementById('twitter').value);
                     formData.append('createTokenMetadata[telegram]', document.getElementById('telegram').value);
                     formData.append('createTokenMetadata[website]', document.getElementById('website').value);
@@ -460,7 +480,8 @@
                             throw new Error(data.error);
                         }
                         console.log('Success:', data);
-                        let result = bundleCheckbox ? `BUNDLE ID: ${data.result}` : `<a href="https://solscan.io/tx/${data.result}" target="_blank">Solscan</a>`
+                        document.getElementById('mintAddress').value = data.mint
+                        let result = bundleCheckbox ? `BUNDLE ID: ${data.result} | <a href="https://pump.fun/${data.mint}" target="_blank">Pump.fun</a>` : `<a href="https://solscan.io/tx/${data.result}" target="_blank">Solscan</a> | <a href="https://pump.fun/${data.mint}" target="_blank">Pump.fun</a>`
                         status.innerHTML = `CREATED! | ${result}`;
 
                     } catch (error) {
@@ -468,6 +489,16 @@
                     }
                 }
             });
+            async function fetchBlobFromBase64(base64String) {
+                try {
+                    const response = await fetch(base64String);
+                    const blob = await response.blob();
+                    console.log(blob);
+                    return blob;
+                } catch (error) {
+                    console.error('Error fetching blob:', error);
+                }
+            }
         });
         document.addEventListener('DOMContentLoaded', function () {
             const socket = new WebSocket('ws://bundles-api-rest.jito.wtf/api/v1/bundles/tip_stream');
@@ -487,6 +518,88 @@
             socket.onerror = function (error) {
                 console.error('WebSocket error:', error);
             };
+            const tabs = document.querySelectorAll(".tabs ul li");
+            const tabContents = document.querySelectorAll(".tab-content");
+
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    const targetId = tab.id;
+                    tabs.forEach(t => t.classList.remove("is-active"));
+                    tab.classList.add("is-active");
+                    tabContents.forEach(content => content.classList.add("is-hidden"));
+                    document.getElementById(targetId + "Content").classList.remove("is-hidden");
+                });
+            });
+            document.getElementById('wallet').value = localStorage.getItem('wallet') || '';
+            document.getElementById('rpc').value = localStorage.getItem('rpc') || 'https://mainnet.helius-rpc.com/?api-key=0c36be1a-e380-4a79-95d1-684107bc016e';
+            document.getElementById('snipePrivateKeys').value = localStorage.getItem('snipePrivateKeys') || '';
+            document.getElementById('snipeAmounts').value = localStorage.getItem('snipeAmounts') || '1';
+            document.getElementById('buy_amount').value = localStorage.getItem('buy_amount') || '1.5';
+            document.getElementById('mainWalletPrivate').value = localStorage.getItem('mainWalletPrivate') || '';
+            document.getElementById('priorityFee').value = localStorage.getItem('priorityFee') || '0.0015';
+            document.getElementById('tip').value = localStorage.getItem('tip') || '0.004';
+
+
+            document.getElementById('saveSettings').addEventListener('click', function () {
+                localStorage.setItem('wallet', document.getElementById('wallet').value);
+                localStorage.setItem('priorityFee', document.getElementById('priorityFee').value);
+                localStorage.setItem('tip', document.getElementById('tip').value);
+                localStorage.setItem('mainWalletPrivate', document.getElementById('mainWalletPrivate').value);
+                localStorage.setItem('rpc', document.getElementById('rpc').value);
+                localStorage.setItem('snipePrivateKeys', document.getElementById('snipePrivateKeys').value);
+                localStorage.setItem('snipeAmounts', document.getElementById('snipeAmounts').value);
+                localStorage.setItem('buy_amount', document.getElementById('buy_amount').value);
+                alert('Settings saved!');
+            });
+
+            const fileInput = document.getElementById('filePath');
+            const previewImage = document.getElementById('previewImage');
+
+            // Handle file selection from input
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    displayImage(file);
+                }
+            });
+
+            // Handle paste event
+            document.addEventListener('paste', (event) => {
+                const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+                for (const item of items) {
+                    if (item.kind === 'file') {
+                        const file = item.getAsFile();
+                        fileInput.files = new DataTransfer().files; // clear the previous file
+                        fileInput.files[0] = file;
+                        displayImage(file);
+                    }
+                }
+            });
+
+            // Handle drag and drop event
+            document.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+
+            document.addEventListener('drop', (event) => {
+                event.preventDefault();
+                const file = event.dataTransfer.files[0];
+                if (file) {
+                    fileInput.files = new DataTransfer().files; // clear the previous file
+                    fileInput.files[0] = file;
+                    displayImage(file);
+                }
+            });
+
+            // Function to display image preview
+            function displayImage(file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    previewImage.src = event.target.result;
+                    previewImage.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
         })
     </script>
 </body>

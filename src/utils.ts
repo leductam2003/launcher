@@ -16,7 +16,7 @@ import fs from "fs";
 export function privateToKeypair(privateKey: string): Keypair {
   let mint;
   switch (true) {
-    case privateKey === "random":
+    case privateKey === "":
       mint = Keypair.generate();
       break;
     case matchPrivateKey(privateKey):
@@ -28,7 +28,7 @@ export function privateToKeypair(privateKey: string): Keypair {
   }
   return mint;
 }
-function matchPrivateKey(key: string) {
+export function matchPrivateKey(key: string) {
   const regex = /^.{87,88}$/;
   return regex.test(key);
 }
