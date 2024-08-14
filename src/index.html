@@ -97,7 +97,7 @@
                                 <div class="field is-grouped">
                                     <div class="control">
                                         <img id="previewImage" src="" alt="Image Preview"
-                                            style="display:none; width: 50px; height: 50px; margin-right: 10px;">
+                                            style="display:none; width: 90px; height: 90px; margin-right: 10px; border-radius: 100px;" class="previewImage">
                                     </div>
                                     <div class="control">
                                         <label class="label" for="filePath">Image:</label>
@@ -485,8 +485,8 @@
                             method: 'POST',
                             body: formData
                         });
-                        const data = await response.json();
                         if (!response.ok) {
+                            const data = await response.json();
                             status.innerHTML = `${data.error}`;
                             throw new Error(data.error);
                         }
@@ -497,6 +497,7 @@
 
                     } catch (error) {
                         console.error('Error:', error);
+                        status.innerHTML = error;
                     }
                 }
             });
