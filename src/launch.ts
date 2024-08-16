@@ -356,6 +356,24 @@ app.get('/tip_floor', (req, res) => {
         .then(data => res.json(data))
         .catch(error => res.status(500).send(error.toString()));
 });
+app.get('/tweet/:tweet_id', async (req, res) => {
+    try {
+        const tweetId = req.params.tweet_id;
+        const url = `https://pumpdat.lol/api/tweet/${tweetId}`;
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const blob = await response.blob();
+        const arrayBuffer = await blob.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        res.set('Content-Type', blob.type);
+        res.send(buffer);
+    } catch (error) {
+        res.status(500).send(error);
+    }
+});
+
 
 const PORT = process.env.PORT || 80;
 

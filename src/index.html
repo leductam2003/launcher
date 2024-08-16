@@ -97,7 +97,8 @@
                                 <div class="field is-grouped">
                                     <div class="control">
                                         <img id="previewImage" src="" alt="Image Preview"
-                                            style="display:none; width: 90px; height: 90px; margin-right: 10px; border-radius: 100px;" class="previewImage">
+                                            style="display:none; width: 90px; height: 90px; margin-right: 10px; border-radius: 100px;"
+                                            class="previewImage">
                                     </div>
                                     <div class="control">
                                         <label class="label" for="filePath">Image:</label>
@@ -137,6 +138,13 @@
                                     <input class="input" type="text" id="buy_amount" name="buy_amount" value="1.5">
                                 </div>
                             </div>
+                            <div class="field">
+                                <label class="label" for="website">Tweet:</label>
+                                <div class="control">
+                                    <input class="input" type="text" id="tweetURL" name="tweet" value=""
+                                        placeholder="tweet url for fast fill">
+                                </div>
+                            </div>
                             <div class="checkbox">
                                 <label class="checkbox">
                                     <input id="bundleCheckbox" type="checkbox" /> Bundle
@@ -150,6 +158,7 @@
                                 <button id="clearButton" class="button is-primary" type="submit">Clear</button>
                             </div><br>
                             <div class="control">
+                                <button id="loadTweet" class="button is-danger" type="submit">Load Tweet</button>
                                 <button id="fastGasButton" class="button is-danger" type="submit">Fast Gas</button>
                                 <button id="fastFillButton" class="button is-danger" type="submit">Fast Fill</button>
                                 <button id="normalGasButton" class="button is-primary" type="submit">Reset Gas</button>
@@ -245,6 +254,42 @@
     </section>
 
     <script>
+        document.getElementById('loadTweet').addEventListener('click', async function (event) {
+            event.preventDefault();
+            const tweetURL = document.getElementById('tweetURL').value;
+            const regex = /status\/(\d+)/;
+            const match = tweetURL.match(regex);
+            if (match) {
+                const tweetId = match[1];
+                document.getElementById('description').value = tweetURL
+                document.getElementById('twitter').value = tweetURL
+                document.getElementById('telegram').value = tweetURL
+                document.getElementById('website').value = tweetURL
+                fetchAndDisplayImage(tweetId);
+            } else {
+                console.log("No Tweet ID found.");
+                document.getElementById('status').innerHTML = 'No Tweet ID found.'
+            }
+
+        })
+
+        async function fetchAndDisplayImage(id) {
+            try {
+                document.getElementById('status').innerHTML = 'Fetching image....'
+                const response = await fetch(`/tweet/${id}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                displayImage(blob);
+                document.getElementById('status').innerHTML = 'DONE!!'
+            } catch (error) {
+                console.error("Failed to fetch and display image:", error);
+            }
+        }
+
         document.getElementById('fastFillButton').addEventListener('click', async function (event) {
             event.preventDefault();
             const description = document.getElementById('description').value;
@@ -348,6 +393,7 @@
             document.getElementById('twitter').value = null;
             document.getElementById('telegram').value = null;
             document.getElementById('website').value = null;
+            document.getElementById('tweetURL').value = null;
             document.getElementById('filePath').value = null;
         })
         document.getElementById('showMintAddress').addEventListener('click', async function (event) {
@@ -562,7 +608,6 @@
             const fileInput = document.getElementById('filePath');
             const previewImage = document.getElementById('previewImage');
 
-            // Handle file selection from input
             fileInput.addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 if (file) {
@@ -570,20 +615,18 @@
                 }
             });
 
-            // Handle paste event
             document.addEventListener('paste', (event) => {
                 const items = (event.clipboardData || event.originalEvent.clipboardData).items;
                 for (const item of items) {
                     if (item.kind === 'file') {
                         const file = item.getAsFile();
-                        fileInput.files = new DataTransfer().files; // clear the previous file
+                        fileInput.files = new DataTransfer().files;
                         fileInput.files[0] = file;
                         displayImage(file);
                     }
                 }
             });
 
-            // Handle drag and drop event
             document.addEventListener('dragover', (event) => {
                 event.preventDefault();
             });
@@ -592,14 +635,13 @@
                 event.preventDefault();
                 const file = event.dataTransfer.files[0];
                 if (file) {
-                    fileInput.files = new DataTransfer().files; // clear the previous file
+                    fileInput.files = new DataTransfer().files;
                     fileInput.files[0] = file;
                     displayImage(file);
                 }
             });
-
-            // Function to display image preview
-            function displayImage(file) {
+        })
+        function displayImage(file) {
                 const reader = new FileReader();
                 reader.onload = function (event) {
                     previewImage.src = event.target.result;
@@ -607,7 +649,6 @@
                 };
                 reader.readAsDataURL(file);
             }
-        })
     </script>
 </body>
 
